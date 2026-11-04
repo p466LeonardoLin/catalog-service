@@ -3,8 +3,8 @@ package com.polarbookshop.catalog_service.web;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.polarbookshop.catalogservice.domain.BookAlreadyExistsException;
-import com.polarbookshop.catalogservice.domain.BookNotFoundException;
+import com.polarbookshop.catalog_service.domain.BookAlreadyExistsException;
+import com.polarbookshop.catalog_service.domain.BookNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

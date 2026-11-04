@@ -4,8 +4,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.polarbookshop.catalogservice.domain.Book;
-import com.polarbookshop.catalogservice.domain.BookRepository;
+import com.polarbookshop.catalog_service.domain.Book;
+import com.polarbookshop.catalog_service.domain.BookRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
