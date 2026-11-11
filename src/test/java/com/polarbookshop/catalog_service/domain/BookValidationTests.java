@@ -5,6 +5,8 @@ import java.util.Set;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import com.polarbookshop.catalog_service.domain.Book;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -78,5 +80,35 @@ class BookValidationTests {
         assertThat(violations).hasSize(1);
         assertThat(violations.iterator().next().getMessage())
             .isEqualTo("The book price must be greater than zero.");
+    }
+
+    // e3
+
+    private final Book.IsbnValidator isbnValidator = new Book.IsbnValidator();
+
+
+    @Test
+    void validIsbn10EndingInXIsAccepted() {
+        assertThat(isbnValidator.isValid("080442957X", null)).isTrue();
+    }
+
+    @Test
+    void invalidIsbn10IsRejected() {
+        assertThat(isbnValidator.isValid("0306406153", null)).isFalse();
+    }
+
+    @Test
+    void validIsbn13IsAccepted() {
+        assertThat(isbnValidator.isValid("9780306406157", null)).isTrue();
+    }
+
+    @Test
+    void invalidIsbn13IsRejected() {
+        assertThat(isbnValidator.isValid("9780306406158", null)).isFalse();
+    }
+
+    @Test
+    void lettersAreRejected() {
+        assertThat(isbnValidator.isValid("abcdefghij", null)).isFalse();
     }
 }
