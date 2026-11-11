@@ -9,3 +9,16 @@ server:
       min-spare: 5
 polar:
   greeting: Welcome to the local book catalog!
+
+spring:
+  application:
+    name: catalog-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/polardb_catalog
+    username: user
+    password: password
+
+    hikari:
+      connection-timeout: 2000
+      maximum-pool-size: 5
