@@ -14,6 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.springframework.dao.OptimisticLockingFailureException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 @DataJdbcTest
 @Import(DataConfig.class)            // auditing is not part of the slice by default
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -121,5 +124,21 @@ class BookRepositoryJdbcTests {
 
         assertThat(actual).hasSize(2);
         assertThat(actual).allMatch(book -> book.author().equals("A Author A"));
+    }
+    
+    @Test
+    void staleUpdateThrowsOptimisticLockingFailure() {
+        jdbcAggregateTemplate.insert(Book.of("1236543001", "Title", "Author", 12.90));
+        var first = bookRepository.findByIsbn("1236543001").get();
+        var second = bookRepository.findByIsbn("1236543001").get();  
+
+        bookRepository.save(new Book(first.id(), first.isbn(), "C1", first.author(),
+            first.price(), first.publisher(), first.createdDate(), first.lastModifiedDate(),
+            first.version()));
+
+        var stale = new Book(second.id(), second.isbn(), "C2", second.author(),
+            second.price(), second.publisher(), second.createdDate(), second.lastModifiedDate(),
+            second.version());
+        assertThatThrownBy(() -> bookRepository.save(stale)).isInstanceOf(OptimisticLockingFailureException.class);
     }
 }

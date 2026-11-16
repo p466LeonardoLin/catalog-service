@@ -24,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+import org.springframework.dao.OptimisticLockingFailureException;
+
 @WebMvcTest(BookController.class)
 class BookControllerMvcTests {
 
@@ -119,5 +121,19 @@ class BookControllerMvcTests {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()").value(1))
             .andExpect(jsonPath("$[0].isbn").value("1236542001"));
+    }
+    //ex4
+    @Test
+    void whenPutConflictsWithAnotherUpdateThenShouldReturn409() throws Exception {
+        given(bookService.bookExists("1234567890")).willReturn(true);
+        given(bookService.editBookDetails(eq("1234567890"), any(Book.class)))
+            .willThrow(new OptimisticLockingFailureException("stale version"));
+
+        mockMvc.perform(put("/books/1234567890")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {"isbn":"1234567890","title":"Title","author":"Author","price":9.90}
+                    """))
+            .andExpect(status().isConflict());
     }
 }

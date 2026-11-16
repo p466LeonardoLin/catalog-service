@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import org.springframework.dao.OptimisticLockingFailureException;
+
 @RestControllerAdvice
 public class BookControllerAdvice {
 
@@ -25,6 +27,13 @@ public class BookControllerAdvice {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     String bookAlreadyExistsHandler(BookAlreadyExistsException ex) {
         return ex.getMessage();
+    }
+    
+    //ex4
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT) 
+    String optimisticLockHandler(OptimisticLockingFailureException ex) {
+        return "The book was changed by others find them.";
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

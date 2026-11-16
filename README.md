@@ -45,3 +45,19 @@ I added `V2__Add_publisher_column.sql`, which adds a `publisher` column to `book
 ### E2: Search by author
 
 `GET /books?author=...` now returns the books by that author. without the parameter it returns all books. I changed `BookRepository.findByAuthor`, and `BookService.viewBooksByAuthor`. It is also tested in `BookRepositoryJdbcTests` and in `BookControllerMvcTests`.
+
+### E3:
+
+`BookDataLoader` is now guarded by `@ConditionalOnProperty(name = "polar.testdata.enabled", havingValue = "true")` instead of `@Profile("testdata")`, and `bootRun` sets `polar.testdata.enabled=true`.
+
+`POLAR_TESTDATA_ENABLED=true java -jar build/libs/catalog-service-0.0.1-SNAPSHOT.jar`
+It also works on the packaged JAR, with no rebuild.
+With the variable set, the two sample books are loaded; without it nothing is loaded.
+
+
+### E4: Optimistic locking in action
+
+`BookRepositoryJdbcTests.staleUpdateThrowsOptimisticLockingFailure` loads the same book two times so that it can saves a update through the first copy, and then saves the second copythrowing `OptimisticLockingFailureException` since is out of date for the version. 
+
+`BookControllerMvcTests.whenPutConflictsWithAnotherUpdateThenShouldReturn409` tests it.
+
