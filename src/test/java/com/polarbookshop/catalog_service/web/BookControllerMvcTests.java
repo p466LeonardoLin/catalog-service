@@ -21,6 +21,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 @WebMvcTest(BookController.class)
 class BookControllerMvcTests {
 
@@ -105,5 +108,16 @@ class BookControllerMvcTests {
             .andExpect(status().isBadRequest());
 
         verifyNoInteractions(bookService);
+    }
+    
+    @Test
+    void whenGetBooksByAuthorThenShouldReturnOnlyThoseBooks() throws Exception {
+        given(bookService.viewBooksByAuthor("A Author A"))
+            .willReturn(List.of(Book.of("1236542001", "Title", "A Author A", 1.0)));
+
+        mockMvc.perform(get("/books").param("author", "A Author A"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.length()").value(1))
+            .andExpect(jsonPath("$[0].isbn").value("1236542001"));
     }
 }

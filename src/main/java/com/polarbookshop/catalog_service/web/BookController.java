@@ -19,8 +19,15 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // @GetMapping
+    // public Iterable<Book> get() {
+    //     return bookService.viewBookList();
+    // }
     @GetMapping
-    public Iterable<Book> get() {
+    public Iterable<Book> get(@RequestParam(required = false) String author) {
+        if (author != null) {
+            return bookService.viewBooksByAuthor(author);
+        }
         return bookService.viewBookList();
     }
 

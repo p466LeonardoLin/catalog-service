@@ -41,3 +41,7 @@ I added `V2__Add_publisher_column.sql`, which adds a `publisher` column to `book
 2. Release 2: once every instance runs the new code and every row has a publisher, add `V3` oublisher with not null with alter table.
 
 
+
+### E2: Search by author
+
+`GET /books?author=...` now returns the books by that author. without the parameter it returns all books. I changed `BookRepository.findByAuthor`, and `BookService.viewBooksByAuthor`. It is also tested in `BookRepositoryJdbcTests` and in `BookControllerMvcTests`.

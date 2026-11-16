@@ -109,4 +109,17 @@ class BookRepositoryJdbcTests {
         assertThat(found).isPresent();
         assertThat(found.get().publisher()).isNull();
     }
+
+    //ex2
+    @Test
+    void findByAuthorReturnsOnlyThatAuthorsBooks() {
+        jdbcAggregateTemplate.insert(Book.of("1236542001", "Title A", "A Author A", 15.02));
+        jdbcAggregateTemplate.insert(Book.of("1236542002", "Title B", "A Author A", 16.03));
+        jdbcAggregateTemplate.insert(Book.of("1236542003", "Title C", "B Author B", 17.04));
+
+        Iterable<Book> actual = bookRepository.findByAuthor("A Author A");
+
+        assertThat(actual).hasSize(2);
+        assertThat(actual).allMatch(book -> book.author().equals("A Author A"));
+    }
 }

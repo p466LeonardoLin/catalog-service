@@ -56,4 +56,9 @@ public class BookService {
     public boolean bookExists(String isbn) {
         return bookRepository.existsByIsbn(isbn);
     }
+
+    //ex2:
+    public Iterable<Book> viewBooksByAuthor(String author) {
+        return bookRepository.findByAuthor(author);
+    }
 }
