@@ -89,4 +89,24 @@ class BookRepositoryJdbcTests {
         assertThat(saved.createdDate()).isNotNull();
         assertThat(saved.lastModifiedDate()).isNotNull();
     }
+
+    @Test
+    void publisherIsPersisted() {
+        bookRepository.save(Book.of("1234562004", "Title", "Author", 12.90, "Polarsophia"));
+
+        var found = bookRepository.findByIsbn("1234562004");
+
+        assertThat(found).isPresent();
+        assertThat(found.get().publisher()).isEqualTo("Polarsophia");
+    }
+
+    @Test
+    void publisherIsOptional() {
+        bookRepository.save(Book.of("1234562005", "Title", "Author", 12.90));
+
+        var found = bookRepository.findByIsbn("1234562005");
+
+        assertThat(found).isPresent();
+        assertThat(found.get().publisher()).isNull();
+    }
 }

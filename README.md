@@ -27,3 +27,17 @@ DELETE returns 204 whether or not the book existed. HTTP defines DELETE as idemp
 `CatalogServiceApplicationTests.whenBookLifecycleThenAllStepsWork` does POST,
 GET, PUT, DELETE, then GET (expecting 404) on one book.
 
+
+## Practicum 2 exercise notes
+
+### E1: 
+
+I added `V2__Add_publisher_column.sql`, which adds a `publisher` column to `book` wchi is an optional value so it can be null, and a 5-argument `Book.of`. `BookService.editBookDetails` has been changed to match the chang of the `book.java`.
+
+**Why the column must be nullable:** Existing book has already a null value for it. Therefore it must be nullable. Also, during a rolling deployment the old version of the service is still running against the already migrated database. Old code does not know about the new column and inserts books without a publisher.
+
+**Two-release plan to make it mandatory.**
+1. Release 1: add the nullable column, and deploy code that writes the publisher and still works when it is missing. So that it will fill in the publisher for existing books.
+2. Release 2: once every instance runs the new code and every row has a publisher, add `V3` oublisher with not null with alter table.
+
+
