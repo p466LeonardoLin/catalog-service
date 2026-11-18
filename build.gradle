@@ -40,3 +40,7 @@ tasks.named('test') {
 bootRun {
   systemProperty 'polar.testdata.enabled', 'true'
 }
+
+tasks.named('jar') {
+    enabled = false
+}
